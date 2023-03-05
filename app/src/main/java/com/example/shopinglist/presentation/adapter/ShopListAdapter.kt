@@ -6,16 +6,18 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 
 
 class ShopListAdapter(
-    onItemClick: (position: Int) -> Unit):  AsyncListDifferDelegationAdapter<ShopItem>(
-    RepositoryDiffUtilCallback()
+    onItemClick: (position: Int) -> Unit
+) : AsyncListDifferDelegationAdapter<ShopItem>(
+    ShopListDiffUtilCallback()
 ) {
 
     init {
-        delegatesManager.addDelegate(ShopListAdapterDelegate(onItemClick))
+        delegatesManager.addDelegate(ShopListTrueAdapterDelegate(onItemClick))
+            .addDelegate(ShopListFalseAdapterDelegate(onItemClick))
     }
 
-    class RepositoryDiffUtilCallback : DiffUtil.ItemCallback<ShopItem>() {
-        //    Сравнивает два элемента на основании какого-либо индентификатора
+    class ShopListDiffUtilCallback : DiffUtil.ItemCallback<ShopItem>() {
+        //    Сравнивает два элемента на основании индентификатора
         override fun areItemsTheSame(
             oldItem: ShopItem,
             newItem: ShopItem
@@ -30,6 +32,5 @@ class ShopListAdapter(
         ): Boolean {
             return oldItem == newItem
         }
-
     }
 }

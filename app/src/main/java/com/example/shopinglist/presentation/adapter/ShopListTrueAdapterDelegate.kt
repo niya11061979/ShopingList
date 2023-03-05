@@ -1,18 +1,23 @@
 package com.example.shopinglist.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shopinglist.R
+import com.example.shopinglist.databinding.ItemShopFalseBinding
 import com.example.shopinglist.domain.ShopItem
 import com.hannesdorfmann.adapterdelegates4.AbsListItemAdapterDelegate
+import com.example.shopinglist.utils.inflate
 
 
-class ShopListAdapterDelegate(private val onItemClick: (position: Int) -> Unit) :
-    AbsListItemAdapterDelegate<ShopItem, ShopItem, ShopListAdapterDelegate.Holder>() {
+class ShopListTrueAdapterDelegate(private val onItemClick: (position: Int) -> Unit) :
+    AbsListItemAdapterDelegate<ShopItem, ShopItem, ShopListTrueAdapterDelegate.Holder>() {
 
-    override fun isForViewType(item: ShopItem, items: MutableList<ShopItem>, position: Int): Boolean {
+    override fun isForViewType(
+        item: ShopItem,
+        items: MutableList<ShopItem>,
+        position: Int
+    ): Boolean {
         return true
     }
 
@@ -23,7 +28,7 @@ class ShopListAdapterDelegate(private val onItemClick: (position: Int) -> Unit) 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup): Holder {
-        return Holder(parent.)
+        return Holder(parent.inflate(R.layout.item_shop_false), onItemClick)
     }
 
     class Holder(
@@ -33,12 +38,11 @@ class ShopListAdapterDelegate(private val onItemClick: (position: Int) -> Unit) 
             containerView.setOnClickListener { onItemClick(adapterPosition) }
         }
 
-        private val binding = RepositoryInformationBinding.bind(containerView)
-
+        private var binding = ItemShopFalseBinding.bind(containerView)
 
         fun bind(shopItem: ShopItem) {
-
-
+            binding.nameShopTextView.text = shopItem.name
+            binding.countTextView.text = shopItem.count.toString()
         }
     }
 }
