@@ -1,13 +1,20 @@
 package com.example.shopinglist.presentation.adapter
 
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import com.example.shopinglist.domain.ShopItem
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 
-class ShopListAdapter : AsyncListDifferDelegationAdapter<ShopItem>(ShopListDiffUtilCallback()) {
+class ShopListAdapter(
+    onLongClickImage: (item: ShopItem) -> Unit,
+    onClickImage: (cardView: CardView, id: Long) -> Unit
+) : AsyncListDifferDelegationAdapter<ShopItem>(ShopListDiffUtilCallback()) {
 
     init {
-        delegatesManager.addDelegate(ShopListAdapterDelegate())
+        with(delegatesManager) {
+            addDelegate(ShopListTrueAdapterDelegate(onLongClickImage,onClickImage))
+            addDelegate((ShopListFalseAdapterDelegate(onLongClickImage,onClickImage)))
+        }
     }
 
     class ShopListDiffUtilCallback : DiffUtil.ItemCallback<ShopItem>() {
@@ -20,3 +27,4 @@ class ShopListAdapter : AsyncListDifferDelegationAdapter<ShopItem>(ShopListDiffU
         }
     }
 }
+

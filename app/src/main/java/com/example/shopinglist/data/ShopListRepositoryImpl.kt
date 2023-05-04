@@ -1,18 +1,20 @@
 package com.example.shopinglist.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.shopinglist.domain.ShopItem
 import com.example.shopinglist.domain.ShopListRepository
+import kotlin.random.Random
 
 object ShopListRepositoryImpl : ShopListRepository {
     private val shopListLD = MutableLiveData<List<ShopItem>>()
-    private val shopList = mutableListOf<ShopItem>()
+    private val shopList = sortedSetOf<ShopItem>({ o1, o2 -> o1.id.compareTo(o2.id) })
     private var autoIncrementId = 0
 
     init {
         for (i in 0 until 100) {
-            val item = ShopItem("Name $i", i, true)
+            val item = ShopItem("Name $i", i, Random.nextBoolean())
             addShopItem(item)
         }
     }
@@ -20,7 +22,7 @@ object ShopListRepositoryImpl : ShopListRepository {
     override fun addShopItem(shopItem: ShopItem) {
         if (shopItem.id == ShopItem.UNDEFINED_ID) {
             // autoIncrementId++
-            shopItem.id = autoIncrementId++
+            shopItem.id = autoIncrementId++.toLong()
         }
         shopList.add(shopItem)
         updateList()
@@ -37,7 +39,7 @@ object ShopListRepositoryImpl : ShopListRepository {
         addShopItem(shopItem)
     }
 
-    override fun getShopItem(shopItemId: Int): ShopItem {
+    override fun getShopItem(shopItemId: Long): ShopItem {
         return shopList.find { it.id == shopItemId }
             ?: throw RuntimeException("Shop with id=$shopItemId not found")
     }

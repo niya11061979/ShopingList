@@ -1,10 +1,11 @@
 package com.example.shopinglist.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.viewModels
 import com.example.shopinglist.databinding.ShopListFragmentBinding
+import com.example.shopinglist.domain.ShopItem
 import com.example.shopinglist.presentation.adapter.ShopListAdapter
 import com.example.shopinglist.utils.ItemOffsetDecoration
 import com.example.shopinglist.utils.ViewBindingFragment
@@ -15,6 +16,7 @@ class ShopListFragment :
     ViewBindingFragment<ShopListFragmentBinding>(ShopListFragmentBinding::inflate) {
     private var shopListAdapter: ShopListAdapter by autoCleared()
     private val viewModel: MainViewModel by viewModels()
+    private var currentList = listOf<ShopItem>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initList()
@@ -25,19 +27,25 @@ class ShopListFragment :
     private fun bindViewModel() {
         viewModel.shopList.observe(viewLifecycleOwner) {
             shopListAdapter.items = it
+            currentList = it
         }
     }
 
     private fun initList() {
-        Log.d("Del", "initList")
-        shopListAdapter = ShopListAdapter()
+        shopListAdapter = ShopListAdapter(::onLongClickItem, ::onClickItem)
         with(binding.shopList) {
+            setHasFixedSize(true)
             adapter = shopListAdapter
         }
     }
 
-    private fun onLongClickImage(i: Int) {
+    private fun onClickItem(cardView: CardView, id: Long) {
 
     }
 
+    private fun onLongClickItem(item: ShopItem) {
+        viewModel.changeEnableState(item)
+    }
 }
+
+
